@@ -71,7 +71,7 @@ public final class IKAnalyzer extends Analyzer{
 	protected TokenStreamComponents createComponents(String fieldName) {
 		
 //		Tokenizer _IKTokenizer = new IKTokenizer(in , this.useSmart());
-		final Tokenizer src= new IKTokenizer(new StringReader(""),this.useSmart());
+		final Tokenizer src= new IKTokenizer(new StringReader(""), this.useSmart());
         TokenStream tok = new StandardFilter(src);
         return new TokenStreamComponents(src, tok) {
             @Override
