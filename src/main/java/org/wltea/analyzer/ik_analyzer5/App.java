@@ -1,4 +1,4 @@
-package org.wltea.analyzer;
+package org.wltea.analyzer.ik_analyzer5;
 
 /**
  * Hello world!

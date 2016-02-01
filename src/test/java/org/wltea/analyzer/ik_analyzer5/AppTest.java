@@ -1,4 +1,4 @@
-package org.wltea.analyzer.ik_analyzer_lucene5;
+package org.wltea.analyzer.ik_analyzer5;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

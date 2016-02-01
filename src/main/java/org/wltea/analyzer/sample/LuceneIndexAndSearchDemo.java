@@ -50,10 +50,8 @@ import org.apache.lucene.store.RAMDirectory;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 
 /**
- * 使用IKAnalyzer进行Lucene索引和查询的演示
- * 2012-3-2
- * 以下是结合Lucene5.4 API的写法
- *
+ * 使用IKAnalyzer进行Lucene索引和查询的演示,基于Lucene 5.4.1
+ * @author Ricky Fung
  */
 public class LuceneIndexAndSearchDemo {
 	
