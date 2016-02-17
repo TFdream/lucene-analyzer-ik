@@ -23,7 +23,7 @@
  * 
  * 
  */
-package org.wltea.analyzer.sample;
+package org.wltea.analyzer.ik_analyzer5;
 
 import java.io.IOException;
 
@@ -47,21 +47,17 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.RAMDirectory;
+import org.junit.Test;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 
 /**
  * 使用IKAnalyzer进行Lucene索引和查询的演示,基于Lucene 5.4.1
  * @author Ricky Fung
  */
-public class LuceneIndexAndSearchDemo {
+public class LuceneIndexAndSearchTest {
 	
-	
-	/**
-	 * 模拟：
-	 * 创建一个单条记录的索引，并对其进行搜索
-	 * @param args
-	 */
-	public static void main(String[] args){
+	@Test
+	public void testLucene() {
 		//Lucene Document的域名
 		String fieldName = "text";
 		 //检索内容

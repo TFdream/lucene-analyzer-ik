@@ -23,7 +23,7 @@
  * 
  * 
  */
-package org.wltea.analyzer.sample;
+package org.wltea.analyzer.ik_analyzer5;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -33,6 +33,7 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
+import org.junit.Test;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 
 /**
@@ -40,16 +41,20 @@ import org.wltea.analyzer.lucene.IKAnalyzer;
  * 2012-10-22
  *
  */
-public class IKAnalzyerDemo {
+public class IKAnalzyerTest {
 	
-	public static void main(String[] args){
+	@Test
+	public void testIK() {
+		
+		String text = "魔发丝时尚烫染坊";
+		
 		//构建IK分词器，使用smart分词模式
 		Analyzer analyzer = new IKAnalyzer(true);
 		
 		//获取Lucene的TokenStream对象
 	    TokenStream ts = null;
 		try {
-			ts = analyzer.tokenStream("myfield", new StringReader("这是一个中文分词的例子，你可以直接运行它！IKAnalyer can analysis english text too"));
+			ts = analyzer.tokenStream("myfield", new StringReader(text));
 			//获取词元位置属性
 		    OffsetAttribute  offset = ts.addAttribute(OffsetAttribute.class); 
 		    //获取词元文本属性

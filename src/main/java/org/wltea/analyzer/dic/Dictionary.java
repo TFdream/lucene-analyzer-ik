@@ -39,11 +39,10 @@ import org.wltea.analyzer.cfg.Configuration;
  */
 public class Dictionary {
 
-
 	/*
 	 * 词典单子实例
 	 */
-	private static Dictionary singleton;
+	private static volatile Dictionary singleton;
 	
 	/*
 	 * 主词典对象
@@ -67,6 +66,7 @@ public class Dictionary {
 	private Dictionary(Configuration cfg){
 		this.cfg = cfg;
 		this.loadMainDict();
+		this.loadExtDict();
 		this.loadStopWordDict();
 		this.loadQuantifierDict();
 	}
@@ -84,7 +84,6 @@ public class Dictionary {
 			synchronized(Dictionary.class){
 				if(singleton == null){
 					singleton = new Dictionary(cfg);
-					return singleton;
 				}
 			}
 		}
@@ -192,16 +191,17 @@ public class Dictionary {
 	 * 加载主词典及扩展词典
 	 */
 	private void loadMainDict(){
+		
+		System.out.println("加载主词典：" + cfg.getMainDictionary());
+		
 		//建立一个主词典实例
 		_MainDict = new DictSegment((char)0);
-		//读取主词典文件
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream(cfg.getMainDictionary());
-        if(is == null){
-        	throw new RuntimeException("Main Dictionary not found!!!");
-        }
         
+		BufferedReader br = null;
 		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(is , "UTF-8"), 512);
+			//读取主词典文件
+	        InputStream is = this.getClass().getClassLoader().getResourceAsStream(cfg.getMainDictionary());
+			br = new BufferedReader(new InputStreamReader(is , "UTF-8"), 512);
 			String theWord = null;
 			do {
 				theWord = br.readLine();
@@ -210,22 +210,19 @@ public class Dictionary {
 				}
 			} while (theWord != null);
 			
-		} catch (IOException ioe) {
-			System.err.println("Main Dictionary loading exception.");
-			ioe.printStackTrace();
-			
+		} catch (IOException e) {
+			throw new RuntimeException("load main word dict exception:"+cfg.getMainDictionary(), e);
 		}finally{
 			try {
-				if(is != null){
-                    is.close();
-                    is = null;
+				if(br != null){
+					br.close();
+					br = null;
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		//加载扩展词典
-		this.loadExtDict();
+		
 	}	
 	
 	/**
@@ -235,17 +232,15 @@ public class Dictionary {
 		//加载扩展词典配置
 		List<String> extDictFiles  = cfg.getExtDictionarys();
 		if(extDictFiles != null){
-			InputStream is = null;
+			
 			for(String extDictName : extDictFiles){
 				//读取扩展词典文件
 				System.out.println("加载扩展词典：" + extDictName);
-				is = this.getClass().getClassLoader().getResourceAsStream(extDictName);
-				//如果找不到扩展的字典，则忽略
-				if(is == null){
-					continue;
-				}
+				
+				BufferedReader br = null;
 				try {
-					BufferedReader br = new BufferedReader(new InputStreamReader(is , "UTF-8"), 512);
+					InputStream is = this.getClass().getClassLoader().getResourceAsStream(extDictName);
+					br = new BufferedReader(new InputStreamReader(is , "UTF-8"), 512);
 					String theWord = null;
 					do {
 						theWord = br.readLine();
@@ -256,15 +251,12 @@ public class Dictionary {
 						}
 					} while (theWord != null);
 					
-				} catch (IOException ioe) {
-					System.err.println("Extension Dictionary loading exception.");
-					ioe.printStackTrace();
-					
+				} catch (IOException e) {
+					throw new RuntimeException("load extension word dict exception:"+extDictName, e);
 				}finally{
 					try {
-						if(is != null){
-		                    is.close();
-		                    is = null;
+						if(br != null){
+							br.close();
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -283,17 +275,16 @@ public class Dictionary {
 		//加载扩展停止词典
 		List<String> extStopWordDictFiles  = cfg.getExtStopWordDictionarys();
 		if(extStopWordDictFiles != null){
-			InputStream is = null;
+			
 			for(String extStopWordDictName : extStopWordDictFiles){
+				
 				System.out.println("加载扩展停止词典：" + extStopWordDictName);
-				//读取扩展词典文件
-				is = this.getClass().getClassLoader().getResourceAsStream(extStopWordDictName);
-				//如果找不到扩展的字典，则忽略
-				if(is == null){
-					continue;
-				}
+				
+				BufferedReader br = null;
 				try {
-					BufferedReader br = new BufferedReader(new InputStreamReader(is , "UTF-8"), 512);
+					//读取扩展词典文件
+					InputStream is = this.getClass().getClassLoader().getResourceAsStream(extStopWordDictName);
+					br = new BufferedReader(new InputStreamReader(is , "UTF-8"), 512);
 					String theWord = null;
 					do {
 						theWord = br.readLine();
@@ -304,15 +295,13 @@ public class Dictionary {
 						}
 					} while (theWord != null);
 					
-				} catch (IOException ioe) {
-					System.err.println("Extension Stop word Dictionary loading exception.");
-					ioe.printStackTrace();
-					
+				} catch (IOException e) {
+					throw new RuntimeException("load stop word dict exception:"+extStopWordDictName, e);
 				}finally{
 					try {
-						if(is != null){
-		                    is.close();
-		                    is = null;
+						if(br != null){
+							br.close();
+							br = null;
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -326,15 +315,17 @@ public class Dictionary {
 	 * 加载量词词典
 	 */
 	private void loadQuantifierDict(){
+		
+		System.out.println("加载量词词典：" + cfg.getQuantifierDicionary());
+		
 		//建立一个量词典实例
 		_QuantifierDict = new DictSegment((char)0);
-		//读取量词词典文件
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream(cfg.getQuantifierDicionary());
-        if(is == null){
-        	throw new RuntimeException("Quantifier Dictionary not found!!!");
-        }
+		
+		BufferedReader br = null;
 		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(is , "UTF-8"), 512);
+			//读取量词词典文件
+	        InputStream is = this.getClass().getClassLoader().getResourceAsStream(cfg.getQuantifierDicionary());
+			br = new BufferedReader(new InputStreamReader(is , "UTF-8"), 512);
 			String theWord = null;
 			do {
 				theWord = br.readLine();
@@ -343,15 +334,13 @@ public class Dictionary {
 				}
 			} while (theWord != null);
 			
-		} catch (IOException ioe) {
-			System.err.println("Quantifier Dictionary loading exception.");
-			ioe.printStackTrace();
-			
+		} catch (IOException e) {
+			throw new RuntimeException("load quantifier word dict exception:"+cfg.getQuantifierDicionary(), e);
 		}finally{
 			try {
-				if(is != null){
-                    is.close();
-                    is = null;
+				if(br != null){
+					br.close();
+					br = null;
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

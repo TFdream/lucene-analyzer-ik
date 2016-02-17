@@ -4,7 +4,7 @@
 
   <groupId>org.wltea.analyzer</groupId>
   <artifactId>ik-analyzer5</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
   <packaging>jar</packaging>
 
   <name>ik-analyzer5</name>
