@@ -53,6 +53,7 @@ public class AppTest {
 				e.printStackTrace();
 		      }
 			}
+			analyzer.close();
 	    }
 	}
 }

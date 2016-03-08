@@ -83,6 +83,7 @@ public class IKAnalzyerTest {
 				e.printStackTrace();
 		      }
 			}
+			analyzer.close();
 	    }
 		
 	}
