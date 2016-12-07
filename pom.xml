@@ -7,7 +7,7 @@
 	<version>1.0.2</version>
 	<packaging>jar</packaging>
 
-	<name>ik-analyzer5</name>
+	<name>lucene-analyzer-ik</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
